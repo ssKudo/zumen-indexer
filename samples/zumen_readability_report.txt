@@ -1,0 +1,124 @@
+# Zumen Index Readability Report
+
+PDF: dummy_drawings.pdf
+Pages: 11
+Page size: 595.27 x 841.89 pts (A4)
+PDF created: Wed Jun  3 15:10:25 2026 JST
+Generated: 2026-06-03T06:10:32.396045+00:00
+
+Legend:
+- source=embedded: PDF内の文字情報から読み取り
+- source=ocr: OCR結果を採用
+- quality=high/medium/low/none: 文字量と有効文字密度から見た簡易評価
+- needs_ocr=yes: 自動判定ではOCR対象になったページ
+- 信頼度: 高 (>= 0.85) / 中 (>= 0.60) / 要確認 (< 0.60) の判定確度
+
+## Page 001
+Drawing: D10 -
+Discipline: unknown
+Scale: -
+Application flag: -
+Drawing metadata source: title_block (信頼度: 要確認 (0.58))
+Readability: quality=medium score=0.666 source=embedded embedded_chars=593 ocr_chars=0 best_chars=593 needs_ocr=no chunks=1
+Extracted fields: drawing_no=D10 (中 (0.62)), project_no=PRJ-9999 (中 (0.62))
+Preview: 図面リスト (DRAWING LIST) 管理No: PRJ-9999 / 物件番号: PRJ-9999 No. 図面番号 図面名称 縮尺 No. 図面番号 図面名称 縮尺 2 D01 GENERAL NOTES AND SPECIFICATIONS ● 7 D06 ELEVATION NORTH AND SOUTH ● 3 D02 SITE PLAN AND DETAILS ● 8 D07 FOUNDATION PLAN ● 4 D03 FIRST FLOOR PLAN ● 9 D08 ROOF FRAMING PLAN ● 5 D04 SECOND...
+
+## Page 002
+Drawing: D01 GENERAL NOTES AND SPECIFICATIONS
+Discipline: unknown
+Scale: -
+Application flag: ●
+Drawing metadata source: toc (信頼度: 高 (0.86))
+Readability: quality=medium score=0.575 source=embedded embedded_chars=512 ocr_chars=0 best_chars=512 needs_ocr=no chunks=1
+Extracted fields: drawing_no=D01 (中 (0.62)), project_no=PRJ-9999 (中 (0.62)), scale=1/100 (中 (0.62))
+Preview: [D01: GENERAL NOTES AND SPECIFICATIONS] This is an automatically generated anonymous drawing for GENERAL NOTES AND SPECIFICATIONS. Drawing Code: D01 / Project reference: PRJ-9999. 物件番号: PRJ-9999 図面名: GENERAL NOTES AND SPECIFICATIONS 図面番号: D01 縮尺: 1/100
+
+## Page 003
+Drawing: D02 SITE PLAN AND DETAILS
+Discipline: unknown
+Scale: -
+Application flag: ●
+Drawing metadata source: toc (信頼度: 高 (0.86))
+Readability: quality=low score=0.538 source=embedded embedded_chars=479 ocr_chars=0 best_chars=479 needs_ocr=no chunks=1
+Extracted fields: drawing_no=D02 (中 (0.62)), project_no=PRJ-9999 (中 (0.62)), scale=1/100 (中 (0.62))
+Preview: [D02: SITE PLAN AND DETAILS] This is an automatically generated anonymous drawing for SITE PLAN AND DETAILS. Drawing Code: D02 / Project reference: PRJ-9999. 物件番号: PRJ-9999 図面名: SITE PLAN AND DETAILS 図面番号: D02 縮尺: 1/100
+
+## Page 004
+Drawing: D03 FIRST FLOOR PLAN
+Discipline: unknown
+Scale: -
+Application flag: ●
+Drawing metadata source: toc (信頼度: 高 (0.86))
+Readability: quality=low score=0.523 source=embedded embedded_chars=464 ocr_chars=0 best_chars=464 needs_ocr=no chunks=1
+Extracted fields: drawing_no=D03 (中 (0.62)), project_no=PRJ-9999 (中 (0.62)), scale=1/100 (中 (0.62))
+Preview: [D03: FIRST FLOOR PLAN] This is an automatically generated anonymous drawing for FIRST FLOOR PLAN. Drawing Code: D03 / Project reference: PRJ-9999. 物件番号: PRJ-9999 図面名: FIRST FLOOR PLAN 図面番号: D03 縮尺: 1/100
+
+## Page 005
+Drawing: D04 SECOND FLOOR PLAN
+Discipline: unknown
+Scale: -
+Application flag: ●
+Drawing metadata source: toc (信頼度: 高 (0.86))
+Readability: quality=low score=0.527 source=embedded embedded_chars=467 ocr_chars=0 best_chars=467 needs_ocr=no chunks=1
+Extracted fields: drawing_no=D04 (中 (0.62)), project_no=PRJ-9999 (中 (0.62)), scale=1/100 (中 (0.62))
+Preview: [D04: SECOND FLOOR PLAN] This is an automatically generated anonymous drawing for SECOND FLOOR PLAN. Drawing Code: D04 / Project reference: PRJ-9999. 物件番号: PRJ-9999 図面名: SECOND FLOOR PLAN 図面番号: D04 縮尺: 1/100
+
+## Page 006
+Drawing: D05 ELEVATION EAST AND WEST
+Discipline: unknown
+Scale: -
+Application flag: ●
+Drawing metadata source: toc (信頼度: 高 (0.86))
+Readability: quality=low score=0.545 source=embedded embedded_chars=485 ocr_chars=0 best_chars=485 needs_ocr=no chunks=1
+Extracted fields: drawing_no=D05 (中 (0.62)), project_no=PRJ-9999 (中 (0.62)), scale=1/100 (中 (0.62))
+Preview: [D05: ELEVATION EAST AND WEST] This is an automatically generated anonymous drawing for ELEVATION EAST AND WEST. Drawing Code: D05 / Project reference: PRJ-9999. 物件番号: PRJ-9999 図面名: ELEVATION EAST AND WEST 図面番号: D05 縮尺: 1/100
+
+## Page 007
+Drawing: D06 ELEVATION NORTH AND SOUTH
+Discipline: unknown
+Scale: -
+Application flag: ●
+Drawing metadata source: toc (信頼度: 高 (0.86))
+Readability: quality=medium score=0.552 source=embedded embedded_chars=491 ocr_chars=0 best_chars=491 needs_ocr=no chunks=1
+Extracted fields: drawing_no=D06 (中 (0.62)), project_no=PRJ-9999 (中 (0.62)), scale=1/100 (中 (0.62))
+Preview: [D06: ELEVATION NORTH AND SOUTH] This is an automatically generated anonymous drawing for ELEVATION NORTH AND SOUTH. Drawing Code: D06 / Project reference: PRJ-9999. 物件番号: PRJ-9999 図面名: ELEVATION NORTH AND SOUTH 図面番号: D06 縮尺: 1/100
+
+## Page 008
+Drawing: D07 FOUNDATION PLAN
+Discipline: unknown
+Scale: -
+Application flag: ●
+Drawing metadata source: toc (信頼度: 高 (0.86))
+Readability: quality=low score=0.523 source=embedded embedded_chars=461 ocr_chars=0 best_chars=461 needs_ocr=no chunks=1
+Extracted fields: drawing_no=D07 (中 (0.62)), project_no=PRJ-9999 (中 (0.62)), scale=1/100 (中 (0.62))
+Preview: [D07: FOUNDATION PLAN] This is an automatically generated anonymous drawing for FOUNDATION PLAN. Drawing Code: D07 / Project reference: PRJ-9999. 物件番号: PRJ-9999 図面名: FOUNDATION PLAN 図面番号: D07 縮尺: 1/100
+
+## Page 009
+Drawing: D08 ROOF FRAMING PLAN
+Discipline: unknown
+Scale: -
+Application flag: ●
+Drawing metadata source: toc (信頼度: 高 (0.86))
+Readability: quality=low score=0.527 source=embedded embedded_chars=467 ocr_chars=0 best_chars=467 needs_ocr=no chunks=1
+Extracted fields: drawing_no=D08 (中 (0.62)), project_no=PRJ-9999 (中 (0.62)), scale=1/100 (中 (0.62))
+Preview: [D08: ROOF FRAMING PLAN] This is an automatically generated anonymous drawing for ROOF FRAMING PLAN. Drawing Code: D08 / Project reference: PRJ-9999. 物件番号: PRJ-9999 図面名: ROOF FRAMING PLAN 図面番号: D08 縮尺: 1/100
+
+## Page 010
+Drawing: D09 HVAC DUCT LAYOUT
+Discipline: unknown
+Scale: -
+Application flag: ●
+Drawing metadata source: toc (信頼度: 高 (0.86))
+Readability: quality=low score=0.523 source=embedded embedded_chars=464 ocr_chars=0 best_chars=464 needs_ocr=no chunks=1
+Extracted fields: drawing_no=D09 (中 (0.62)), project_no=PRJ-9999 (中 (0.62)), scale=1/100 (中 (0.62))
+Preview: [D09: HVAC DUCT LAYOUT] This is an automatically generated anonymous drawing for HVAC DUCT LAYOUT. Drawing Code: D09 / Project reference: PRJ-9999. 物件番号: PRJ-9999 図面名: HVAC DUCT LAYOUT 図面番号: D09 縮尺: 1/100
+
+## Page 011
+Drawing: D10 ELECTRICAL POWER AND LIGHTING
+Discipline: unknown
+Scale: -
+Application flag: ●
+Drawing metadata source: toc (信頼度: 高 (0.86))
+Readability: quality=medium score=0.565 source=embedded embedded_chars=503 ocr_chars=0 best_chars=503 needs_ocr=no chunks=1
+Extracted fields: drawing_no=D10 (中 (0.62)), project_no=PRJ-9999 (中 (0.62)), scale=1/100 (中 (0.62))
+Preview: [D10: ELECTRICAL POWER AND LIGHTING] This is an automatically generated anonymous drawing for ELECTRICAL POWER AND LIGHTING. Drawing Code: D10 / Project reference: PRJ-9999. 物件番号: PRJ-9999 図面名: ELECTRICAL POWER AND LIGHTING 図面番号: D10 縮尺: 1/100

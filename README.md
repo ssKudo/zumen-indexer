@@ -87,11 +87,15 @@ zumen-indexer/
     zumen_indexer.py         # CLIエントリーポイント wrapper
   tests/                     # 単体テストスイート
     test_indexer.py
+  samples/                   # 無個性なダミーデータによる動作出力サンプル
+    dummy_drawings.pdf       # 汎用英語表記のダミー図面PDF
+    zumen_readability_report.txt # 抽出結果のサンプルレポート
   private/
     your-drawings.pdf        # ignored by Git
     zumen_index.db           # ignored by Git
 ```
 
+`samples/` には、特定の図面テンプレートのクセや機密情報を一切含まない、英語表記に完全アノニマイズされたデモ用PDFと、その抽出レポートを同梱しています。
 `private/` はローカルで安全に試すための例です。別の場所に PDF を置いて使う場合でも、業務図面、生成 DB、JSONL、OCR テキストなどを公開リポジトリにコミットしないでください。
 
 ## Requirements
