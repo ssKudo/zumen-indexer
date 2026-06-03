@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zumen-indexer"
+version = "0.1.0"
+description = "建築図面をエージェントAIに読ませるためのインデックス生成支援ツール"
+readme = "README.md"
+requires-python = ">=3.10"
+license = {text = "MIT"}
+authors = [
+    {name = "ssKudo", email = "ta-kudo@sunshift.jp"}
+]
+dependencies = [
+    "numpy>=1.20.0",
+    "Pillow>=9.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+]
