@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>zumen-indexer - 建築図面PDFをAI向けに索引化するためのエージェント支援スキルセット</title>
-  <meta name="description" content="図面PDFを読み取り、AIエージェントやRAGシステムが解釈しやすいSQLiteインデックスに構造化・変換するワークフロー雛形。">
+  <meta name="description" content="図面PDFを読み取り、AIエージェントやRAGシステムが解釈しやすいSQLiteインデックスに構造化・変換することを支援するワークフロー雛形。">
   <link rel="stylesheet" href="style.css">
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -119,15 +119,15 @@
         <ul>
           <li>
             <i data-lucide="check-circle"></i>
-            <span><strong>縦方向列パースの自動検知:</strong> 目次を縦方向に走査。画像投影により「列の溝（Gutter）」を自動で見極めて正しくソート抽出。</span>
+            <span><strong>縦方向列パースの検知支援:</strong> 目次を縦方向に走査。画像投影によって「列の溝（Gutter）」の検知を試み、縦方向の順序でのパース開始を支援します。</span>
           </li>
           <li>
             <i data-lucide="check-circle"></i>
-            <span><strong>SQLite による高速特定:</strong> どの図面名が何ページにあるか、縮尺はいくらかが瞬時に検索可能。AIエージェントのRAG効率を最大化。</span>
+            <span><strong>SQLite による特定支援:</strong> 抽出したメタデータをSQLiteで検索可能にし、AIエージェントによる必要な図面ページの特定を支援します。</span>
           </li>
           <li>
             <i data-lucide="check-circle"></i>
-            <span><strong>自動OCRと信頼度評価:</strong> 文字が少ないページは自動でOCRを起動。結果の確度を3段階（高・中・要確認）でレポート化。</span>
+            <span><strong>OCR起動の自動判定と簡易信頼度評価:</strong> 文字密度が低いページを検知してOCRを起動。抽出時の確度スコアを3段階（高・中・要確認）でレポートへ並記します。</span>
           </li>
         </ul>
       </div>
@@ -139,7 +139,7 @@
     <div class="container">
       <div class="section-header">
         <h2>AIエージェントとの対話による具体的な使い方</h2>
-        <p>自律型AIコーディングエージェント（Antigravity, CodexApp など）を使えば、対話するだけで自動的に環境を整え、インデックスを生成します。</p>
+        <p>自律型AIコーディングエージェント（Antigravity, CodexApp など）に指示を与えて、クローンからインデックス生成ワークフローの実行まで、エージェントによる自動構築を検証できます。</p>
       </div>
 
       <div class="agent-flow-grid">
@@ -150,7 +150,7 @@
             <div class="bubble-content">
               <p>このリポジトリをクローンしてきてください：</p>
               <div class="chat-code-block">https://github.com/ssKudo/zumen-indexer.git</div>
-              <p style="margin-top: 8px;">クローンが完了したら、中にあるツールを使って、このワークスペース内にある図面PDFを読み取り、インデックスの作成とレポートの出力を行ってください。必要な依存パッケージや私からの追加情報があれば教えてください。</p>
+              <p style="margin-top: 8px;">クローンが完了したら、中にあるツールを使って、このワークスペース内にある図面PDFを読み取り、インデックスの作成 and レポートの出力を行ってください。必要な依存パッケージや私からの追加情報があれば教えてください。</p>
             </div>
           </div>
           <div class="chat-bubble agent">
@@ -160,7 +160,7 @@
               <p>【システムチェック完了】<br>
               ・Poppler (pdftotext, pdftoppm) はインストール済みです。<br>
               ・Tesseract OCR (jpn) を検出しました。<br>
-              ・Pillow, Numpy を検出したため、高精度な縦方向列検出を有効化します。</p>
+              ・Pillow, Numpy を検出したため、縦方向列検出機能（ヒューリスティック）を有効化します。</p>
               <p>解析を実行し、SQLiteデータベース `zumen_index.db` とテキストレポート `zumen_readability_report.txt` を生成しました！</p>
             </div>
           </div>
@@ -185,8 +185,8 @@
           <div class="step-card glass-card">
             <div class="step-number">3</div>
             <div class="step-info">
-              <h3>対話して指示を出すだけ</h3>
-              <p>チャットで「このリポジトリをクローンして、PDFのインデックスを作って」と伝えるだけで、AIが自律的にコマンドを組み立てて実行します。</p>
+              <h3>対話によるワークフロー検証</h3>
+              <p>チャットで「このリポジトリをクローンして、PDFのインデックスを作って」と指示を投げ、AIエージェントに環境チェックやコマンド実行を試させます。</p>
             </div>
           </div>
         </div>
@@ -197,24 +197,24 @@
   <!-- Features Detail Section -->
   <section class="container" id="features">
     <div class="section-header">
-      <h2>主要機能</h2>
-      <p>ただ抽出するだけではない、建築図面の読み取りに最適化されたスマートな設計。</p>
+      <h2>提供する基本機能（実装例）</h2>
+      <p>建築図面のパースにおけるよくある課題に焦点をあてた、ワークフローの参考実装です。</p>
     </div>
     <div class="features-grid">
       <div class="feature-card glass-card">
         <div class="feature-icon"><i data-lucide="columns"></i></div>
         <h3>縦方向列検出（Gutter Detection）</h3>
-        <p>目次や図面リストが複数列でレイアウトされている場合、画像の黒ピクセル投影によって「列の溝」を検知。順番通り（1→2→3）に目次情報を正しく読み取ります。</p>
+        <p>目次や図面リストが複数列でレイアウトされている場合、画像の黒ピクセル投影によって「列の溝」の検知を試み、縦方向（1→2→3）への並び替えを支援します。</p>
       </div>
       <div class="feature-card glass-card">
         <div class="feature-icon"><i data-lucide="eye"></i></div>
-        <h3>ハイブリッドOCR自動判定</h3>
-        <p>PDFの文字コードを読み取り、認識文字数が極めて少ないページ（スキャンされた紙図面やラスタライズされたもの）だけを自動検出してTesseract OCRを走らせます。</p>
+        <h3>ハイブリッドOCR判定</h3>
+        <p>PDFの文字コードの有無や文字密度を簡易評価し、スキャン画像と思われるページに対してのみTesseract OCRの実行を試みる判定ロジックです。</p>
       </div>
       <div class="feature-card glass-card">
         <div class="feature-icon"><i data-lucide="shield-check"></i></div>
         <h3>信頼度（Confidence）の並記</h3>
-        <p>メタデータの取得元や、文字の鮮明度、レイアウト分析からスコアを計算し「高・中・要確認」の3段階で表記。AIが誤認回答するリスクを防ぎます。</p>
+        <p>メタデータの取得元やテキスト密度から簡易的な信頼度を計算し「高・中・要確認」で記録。エージェントが「自信のなさ」を自覚して回答するための材料を提供します。</p>
       </div>
     </div>
   </section>
@@ -224,7 +224,7 @@
     <div class="container">
       <div class="section-header">
         <h2>💡 開発・運用者からのメッセージ：画像認識（AI）を使いこなすコツ</h2>
-        <p>図面の「ビジュアル情報」をVision LLMに正しく読み取らせるための、現場で培った実践的なノウハウです。</p>
+        <p>図面の「ビジュアル情報」をVision LLMに読み取らせる際、判定確度を少しでも高めるためのアプローチ案です。</p>
       </div>
       
       <div class="problem-comparison" style="margin-top: 40px;">
@@ -242,7 +242,7 @@
           <h3 style="margin-top: 12px;">キッチンのLR勝手などの反転対策</h3>
           <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
             単純な記号パターンだけを見せると、AIは図面の上下左右を誤認して左右を逆に判定してしまいます。<br>
-            そこで、キッチンの近くにある「キッチン」や「K」などの文字の向きを基準として<strong>「文字の底辺が手前（正面）になります。そこから向かってシンクは左ですか？右ですか？」</strong>のように、図面固有のユニークな表記を判断基準に与えることで、AIの読み取り確度は劇的に向上します。
+            そこで、キッチンの近くにある「キッチン」や「K」などの文字の向きを基準として<strong>「文字の底辺が手前（正面）になります。そこから向かってシンクは左ですか？右ですか？」</strong>のように、図面固有のユニークな表記を判断基準に与えることで、AIの判定確度の向上が期待できます。
           </p>
         </div>
       </div>
@@ -323,8 +323,8 @@
   <!-- Call to Action -->
   <section class="cta">
     <div class="container cta-container">
-      <h2>建築図面のインデックスをはじめましょう</h2>
-      <p>エージェントAIの回答精度を高め、図面検索やチェックリストの作成を自動化します。</p>
+      <h2>建築図面のインデックスを体験してみましょう</h2>
+      <p>エージェントAIの検索効率の向上を支援し、図面パースやメタデータ管理のワークフローを検証するベースラインを提供します。</p>
       <a href="https://github.com/ssKudo/zumen-indexer.git" class="btn btn-primary" target="_blank" id="cta-github-btn">
         <i data-lucide="github"></i> GitHub リポジトリを見る
       </a>
