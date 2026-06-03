@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>zumen-indexer - 建築図面をエージェントAIに読ませるためのインデックス生成支援ツール</title>
-  <meta name="description" content="図面PDFを読み取り、AIエージェントやRAGシステムが正確に解釈可能なSQLiteインデックスに自動で構造化・変換する支援ツール。">
+  <title>zumen-indexer - 建築図面PDFをAI向けに索引化するためのエージェント支援スキルセット</title>
+  <meta name="description" content="図面PDFを読み取り、AIエージェントやRAGシステムが解釈しやすいSQLiteインデックスに構造化・変換するワークフロー雛形。">
   <link rel="stylesheet" href="style.css">
   <!-- Lucide Icons CDN -->
   <script src="https://unpkg.com/lucide@latest"></script>
@@ -39,15 +39,15 @@
   <header class="hero">
     <div class="container">
       <div class="badge">
-        <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i> AI-Ready Drawing Indexer
+        <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i> AI Agent Support Skillset
       </div>
       <h1>
         建築図面を、<span class="gradient-text">エージェントAI</span>に読ませる。
-        <span class="subtitle-text">正確なSQLiteインデックスへ変換する支援ツール</span>
+        <span class="subtitle-text">PDFをAI向けに索引化するための支援スキルセット</span>
       </h1>
       <p class="lead">
-        膨大な図面PDFのページ構造、図面リスト、図面枠を自動解析。<br>
-        AIエージェントやRAGシステムが迷うことなく必要なページを見つけるための「索引（インデックス）」を生成します。
+        本リポジトリは、あらゆる図面PDFを完全自動で解析する完成品ではありません。<br>
+        PDFテキスト抽出、OCR、目次推定、SQLite/JSONL出力の基本実装と、現場ごとの要望を伝えるための運用テンプレートを提供するワークフロー雛形です。
       </p>
       <div class="hero-actions">
         <a href="#usage" class="btn btn-primary" id="hero-get-started">
