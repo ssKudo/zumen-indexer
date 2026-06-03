@@ -77,8 +77,16 @@ Antigravity や CodexApp などの自律型 AI コーディングエージェン
 
 ```text
 zumen-indexer/
+  zumen_indexer/             # コアモジュールパッケージ
+    config.py
+    extractor.py
+    parser.py
+    db.py
+    core.py
   scripts/
-    zumen_indexer.py
+    zumen_indexer.py         # CLIエントリーポイント wrapper
+  tests/                     # 単体テストスイート
+    test_indexer.py
   private/
     your-drawings.pdf        # ignored by Git
     zumen_index.db           # ignored by Git
@@ -88,12 +96,13 @@ zumen-indexer/
 
 ## Requirements
 
-Python は標準ライブラリのみで動きます。PDF テキスト抽出と OCR には外部コマンドを使います。
+Python の標準ライブラリに加えて、画像解析による縦列検出やクロップOCR機能を利用するために `Pillow` と `numpy` を使用します（環境にない場合は、標準のテキスト抽出へ安全にフォールバックします）。また、PDF テキスト抽出と OCR には外部コマンドを使います。
 
 Required:
 
 - Python 3.10+
 - Poppler: `pdfinfo`, `pdftotext`
+- numpy, Pillow (詳細は `requirements.txt` を参照)
 
 Optional OCR:
 
