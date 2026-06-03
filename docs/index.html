@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>zumen-indexer - 建築図面をエージェントAIに読ませるためのインデックス生成支援ツール</title>
+  <meta name="description" content="図面PDFを読み取り、AIエージェントやRAGシステムが正確に解釈可能なSQLiteインデックスに自動で構造化・変換する支援ツール。">
+  <link rel="stylesheet" href="style.css">
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Decorative blur spots -->
+  <div class="bg-decor decor-1"></div>
+  <div class="bg-decor decor-2"></div>
+
+  <!-- Navigation -->
+  <nav>
+    <div class="container nav-container">
+      <a href="#" class="logo">
+        <div class="logo-symbol">Z</div>
+        <div class="logo-text">zumen-<span>indexer</span></div>
+      </a>
+      <ul class="nav-links">
+        <li><a href="#features">機能特徴</a></li>
+        <li><a href="#usage">使い方</a></li>
+        <li><a href="#tips">AI運用のコツ</a></li>
+        <li><a href="#schema">データベース構造</a></li>
+        <li><a href="#security">セキュリティ</a></li>
+      </ul>
+      <a href="https://github.com/ssKudo/zumen-indexer.git" class="btn btn-secondary" target="_blank" id="nav-github-btn">
+        <i data-lucide="github"></i> GitHub
+      </a>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <header class="hero">
+    <div class="container">
+      <div class="badge">
+        <i data-lucide="sparkles" style="width: 14px; height: 14px;"></i> AI-Ready Drawing Indexer
+      </div>
+      <h1>
+        建築図面を、<span class="gradient-text">エージェントAI</span>に読ませる。
+        <span class="subtitle-text">正確なSQLiteインデックスへ変換する支援ツール</span>
+      </h1>
+      <p class="lead">
+        膨大な図面PDFのページ構造、図面リスト、図面枠を自動解析。<br>
+        AIエージェントやRAGシステムが迷うことなく必要なページを見つけるための「索引（インデックス）」を生成します。
+      </p>
+      <div class="hero-actions">
+        <a href="#usage" class="btn btn-primary" id="hero-get-started">
+          <i data-lucide="arrow-right"></i> 今すぐ使う
+        </a>
+        <a href="https://github.com/ssKudo/zumen-indexer.git" class="btn btn-secondary" target="_blank" id="hero-github">
+          <i data-lucide="github"></i> リポジトリを見る
+        </a>
+      </div>
+
+      <!-- Hero Mockup Container -->
+      <div class="hero-mockup glass-card">
+        <div class="mockup-header">
+          <div class="mockup-dots">
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+          </div>
+          <div class="mockup-title">zumen_readability_report.txt</div>
+          <div style="width: 40px;"></div>
+        </div>
+        <div class="mockup-body" style="font-family: Consolas, Monaco, monospace; font-size: 0.85rem; padding: 10px; background: #07090F; color: #a9b2c3; border: 1px solid rgba(255,255,255,0.03);">
+          <div><span style="color: #6B7280;"># Page 1 Analysis</span></div>
+          <div>Page Number: 1 (TOC Page)</div>
+          <div>Text Source: column_extracted (検出列数: 4)</div>
+          <div>Drawing title: 図面リスト (TOC Match)</div>
+          <div>--------------------------------------------------</div>
+          <div><span style="color: #00ff87;">[Detected Drawings]</span></div>
+          <div>  - No: 1, Code: P01, Title: 図面リスト (信頼度: 高 (0.86))</div>
+          <div>  - No: 2, Code: A01, Title: 案内図・計画概要 (信頼度: 高 (0.86))</div>
+          <div>  - No: 3, Code: A02, Title: 配置図 (信頼度: 高 (0.86))</div>
+          <div>  - No: 4, Code: A03, Title: 遣方配置図 (信頼度: 高 (0.86))</div>
+          <div>  - No: 5, Code: A04, Title: 求積図・面積表 (信頼度: 高 (0.86))</div>
+          <div>  - No: 6, Code: A05, Title: 1階平面図 (信頼度: 高 (0.86))</div>
+          <div>  - No: 51, Code: M06-2, Title: 換気設備平面図 (信頼度: 中 (0.68))</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Problem / Solution Section -->
+  <section class="container" id="problems">
+    <div class="section-header">
+      <h2>なぜインデックスが必要なのか？</h2>
+      <p>図面PDFのデータ構造と、AI（LLM）の認識能力の間には大きなギャップが存在します。</p>
+    </div>
+    <div class="problem-comparison">
+      <div class="comparison-box bad">
+        <div class="comp-badge">従来の渡し方（直渡し）</div>
+        <h3>そのままPDFを渡すと...</h3>
+        <ul>
+          <li>
+            <i data-lucide="x-circle"></i>
+            <span><strong>目次の順序崩れ:</strong> 複数列（縦書き）で並んだ図面目次が、横方向（一行ごと）に繋がってパースされ、図面番号がめちゃくちゃに。</span>
+          </li>
+          <li>
+            <i data-lucide="x-circle"></i>
+            <span><strong>位置の迷子:</strong> AIは平面図が何ページ目にあるかを把握できず、無関係な構造図や計算書ばかりを探索してしまう。</span>
+          </li>
+          <li>
+            <i data-lucide="x-circle"></i>
+            <span><strong>OCR漏れ:</strong> スキャンされた紙図面や埋め込み文字コードのないページが、そのまま「白紙テキスト」として無視される。</span>
+          </li>
+        </ul>
+      </div>
+      <div class="comparison-box good">
+        <div class="comp-badge">zumen-indexer 導入後</div>
+        <h3>インデックス化して渡すと！</h3>
+        <ul>
+          <li>
+            <i data-lucide="check-circle"></i>
+            <span><strong>縦方向列パースの自動検知:</strong> 目次を縦方向に走査。画像投影により「列の溝（Gutter）」を自動で見極めて正しくソート抽出。</span>
+          </li>
+          <li>
+            <i data-lucide="check-circle"></i>
+            <span><strong>SQLite による高速特定:</strong> どの図面名が何ページにあるか、縮尺はいくらかが瞬時に検索可能。AIエージェントのRAG効率を最大化。</span>
+          </li>
+          <li>
+            <i data-lucide="check-circle"></i>
+            <span><strong>自動OCRと信頼度評価:</strong> 文字が少ないページは自動でOCRを起動。結果の確度を3段階（高・中・要確認）でレポート化。</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Interactive AI Agent Workflow Section -->
+  <section style="background: rgba(255,255,255,0.01); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);" id="usage">
+    <div class="container">
+      <div class="section-header">
+        <h2>AIエージェントとの対話による具体的な使い方</h2>
+        <p>自律型AIコーディングエージェント（Antigravity, CodexApp など）を使えば、対話するだけで自動的に環境を整え、インデックスを生成します。</p>
+      </div>
+
+      <div class="agent-flow-grid">
+        <!-- Chat Simulation -->
+        <div class="chat-simulator">
+          <div class="chat-bubble user">
+            <div class="bubble-sender">あなた (User)</div>
+            <div class="bubble-content">
+              <p>このリポジトリをクローンしてきてください：</p>
+              <div class="chat-code-block">https://github.com/ssKudo/zumen-indexer.git</div>
+              <p style="margin-top: 8px;">クローンが完了したら、中にあるツールを使って、このワークスペース内にある図面PDFを読み取り、インデックスの作成とレポートの出力を行ってください。必要な依存パッケージや私からの追加情報があれば教えてください。</p>
+            </div>
+          </div>
+          <div class="chat-bubble agent">
+            <div class="bubble-sender">AIエージェント (Antigravity / CodexApp)</div>
+            <div class="bubble-content">
+              <p>承知いたしました！まずはリポジトリをクローンし、動作環境を確認します。</p>
+              <p>【システムチェック完了】<br>
+              ・Poppler (pdftotext, pdftoppm) はインストール済みです。<br>
+              ・Tesseract OCR (jpn) を検出しました。<br>
+              ・Pillow, Numpy を検出したため、高精度な縦方向列検出を有効化します。</p>
+              <p>解析を実行し、SQLiteデータベース `zumen_index.db` とテキストレポート `zumen_readability_report.txt` を生成しました！</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Steps List -->
+        <div class="agent-steps">
+          <div class="step-card glass-card">
+            <div class="step-number">1</div>
+            <div class="step-info">
+              <h3>作業フォルダの準備</h3>
+              <p>任意のローカルフォルダ（例：`my-zumen-project/`）を作成し、その中に図面PDF（例：`drawing.pdf`）を置いておきます。</p>
+            </div>
+          </div>
+          <div class="step-card glass-card">
+            <div class="step-number">2</div>
+            <div class="step-info">
+              <h3>エージェントの起動</h3>
+              <p>Antigravity や CodexApp などのアプリで、作成したフォルダを「ワークスペース」として開きます。</p>
+            </div>
+          </div>
+          <div class="step-card glass-card">
+            <div class="step-number">3</div>
+            <div class="step-info">
+              <h3>対話して指示を出すだけ</h3>
+              <p>チャットで「このリポジトリをクローンして、PDFのインデックスを作って」と伝えるだけで、AIが自律的にコマンドを組み立てて実行します。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Detail Section -->
+  <section class="container" id="features">
+    <div class="section-header">
+      <h2>主要機能</h2>
+      <p>ただ抽出するだけではない、建築図面の読み取りに最適化されたスマートな設計。</p>
+    </div>
+    <div class="features-grid">
+      <div class="feature-card glass-card">
+        <div class="feature-icon"><i data-lucide="columns"></i></div>
+        <h3>縦方向列検出（Gutter Detection）</h3>
+        <p>目次や図面リストが複数列でレイアウトされている場合、画像の黒ピクセル投影によって「列の溝」を検知。順番通り（1→2→3）に目次情報を正しく読み取ります。</p>
+      </div>
+      <div class="feature-card glass-card">
+        <div class="feature-icon"><i data-lucide="eye"></i></div>
+        <h3>ハイブリッドOCR自動判定</h3>
+        <p>PDFの文字コードを読み取り、認識文字数が極めて少ないページ（スキャンされた紙図面やラスタライズされたもの）だけを自動検出してTesseract OCRを走らせます。</p>
+      </div>
+      <div class="feature-card glass-card">
+        <div class="feature-icon"><i data-lucide="shield-check"></i></div>
+        <h3>信頼度（Confidence）の並記</h3>
+        <p>メタデータの取得元や、文字の鮮明度、レイアウト分析からスコアを計算し「高・中・要確認」の3段階で表記。AIが誤認回答するリスクを防ぎます。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AI Tips / Dev Message Section -->
+  <section style="background: rgba(79, 172, 254, 0.02); border-top: 1px solid var(--border-subtle); border-bottom: 1px solid var(--border-subtle);" id="tips">
+    <div class="container">
+      <div class="section-header">
+        <h2>💡 開発・運用者からのメッセージ：画像認識（AI）を使いこなすコツ</h2>
+        <p>図面の「ビジュアル情報」をVision LLMに正しく読み取らせるための、現場で培った実践的なノウハウです。</p>
+      </div>
+      
+      <div class="problem-comparison" style="margin-top: 40px;">
+        <div class="comparison-box good" style="background: rgba(15, 22, 40, 0.4); border-color: var(--border-subtle);">
+          <div class="comp-badge" style="background: rgba(0, 242, 254, 0.1); color: var(--color-secondary);">1. 対話を繰り返して「育てる」</div>
+          <h3 style="margin-top: 12px;">一発で完璧を求めない姿勢</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
+            読み取らせたい内容によっては、AIとのプロンプトの調整や指示のフィードバックが何往復か発生するのが自然なプロセスです。<br>
+            各現場や配布先で実際に使いながら、「この聞き方だと間違えやすい」「この判断材料を足そう」とプロンプトやチェックリストをブラッシュアップし、ぜひ気長に育ててみてください。
+          </p>
+        </div>
+        
+        <div class="comparison-box good" style="background: rgba(15, 22, 40, 0.4); border-color: var(--border-subtle);">
+          <div class="comp-badge" style="background: rgba(0, 242, 254, 0.1); color: var(--color-secondary);">2. 「正面」の目印（文字の向き）を明示</div>
+          <h3 style="margin-top: 12px;">キッチンのLR勝手などの反転対策</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem; line-height: 1.7;">
+            単純な記号パターンだけを見せると、AIは図面の上下左右を誤認して左右を逆に判定してしまいます。<br>
+            そこで、キッチンの近くにある「キッチン」や「K」などの文字の向きを基準として<strong>「文字の底辺が手前（正面）になります。そこから向かってシンクは左ですか？右ですか？」</strong>のように、図面固有のユニークな表記を判断基準に与えることで、AIの読み取り確度は劇的に向上します。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CLI & Schema Section -->
+  <section class="container" id="schema">
+    <div class="section-header">
+      <h2>CLI とデータベース構造</h2>
+      <p>エンジニアはCLIコマンドで直接制御可能。出力された SQLite や JSONL は即座に他のシステムと連携できます。</p>
+    </div>
+
+    <div class="cli-container">
+      <!-- Terminal Emulator -->
+      <div class="terminal-mockup">
+        <div class="mockup-header">
+          <div class="mockup-dots">
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+            <div class="mockup-dot"></div>
+          </div>
+          <div class="mockup-title">bash</div>
+          <div style="width: 40px;"></div>
+        </div>
+        <div class="terminal-line cmd">python3 scripts/zumen_indexer.py private/your-drawings.pdf --db out.db --report report.txt --ocr auto</div>
+        <div class="terminal-line output">Loading PDF: private/your-drawings.pdf</div>
+        <div class="terminal-line output">Detecting layout for Table of Contents page...</div>
+        <div class="terminal-line output">Column detection: 4 columns detected.</div>
+        <div class="terminal-line output">Page 1: Extracting drawing items via column text extraction...</div>
+        <div class="terminal-line output">Page 2: Standard text extraction... (Quality Score: 0.85)</div>
+        <div class="terminal-line output">Page 3: Quality Score low (0.12). Triggering Tesseract OCR...</div>
+        <div class="terminal-line output">Generating out.db and report.txt...</div>
+        <div class="terminal-line success">Success. 86 drawings indexed successfully.</div>
+      </div>
+
+      <!-- Schema Bullet Points -->
+      <div class="cli-details">
+        <h3>構造化された SQLite スキーマ</h3>
+        <p>データベースには以下の関係でデータが安全に記録され、RAGエージェントのテキスト検索や分析に使われます。</p>
+        <ul class="cli-bullets">
+          <li>
+            <i data-lucide="database" style="width: 18px; height: 18px;"></i>
+            <span><strong>documents:</strong> PDF単位の情報 (SHA256, ページ数)</span>
+          </li>
+          <li>
+            <i data-lucide="file-text" style="width: 18px; height: 18px;"></i>
+            <span><strong>pages:</strong> ページ単位のテキスト & クオリティスコア</span>
+          </li>
+          <li>
+            <i data-lucide="tag" style="width: 18px; height: 18px;"></i>
+            <span><strong>drawings:</strong> 図面番号、図面名、種別、スケール、信頼度</span>
+          </li>
+          <li>
+            <i data-lucide="search" style="width: 18px; height: 18px;"></i>
+            <span><strong>chunks:</strong> AI検索用に最適化された断片（チャンク）</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Security Section -->
+  <section style="background: rgba(255, 8, 68, 0.01); border-top: 1px solid rgba(255, 8, 68, 0.1);" id="security">
+    <div class="container" style="max-width: 900px; text-align: center;">
+      <i data-lucide="shield-alert" style="width: 48px; height: 48px; color: var(--color-accent); margin-bottom: 20px;"></i>
+      <h2 style="font-family: var(--font-title); font-size: 2.2rem; margin-bottom: 16px;">プライベートな図面を守る設計</h2>
+      <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.7; margin-bottom: 24px;">
+        建築図面には、顧客の個人情報、住所、図面そのものの著作権など、極めて機密性の高い情報が含まれます。<br>
+        `zumen-indexer` は、解析作業用フォルダである <strong>`private/`</strong> や、出力されるデータベース（`*.db`）、JSONL、一時的な画像やレポートなどをすべて <strong>`.gitignore` で完全除外</strong> しています。
+      </p>
+      <p style="color: var(--text-dark); font-size: 0.95rem;">
+        業務データを扱う際は、誤ってリモートリポジトリ（GitHubなど）へコミット・プッシュしてしまわないよう、ローカルの `private/` フォルダを活用し安全に運用してください。
+      </p>
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="cta">
+    <div class="container cta-container">
+      <h2>建築図面のインデックスをはじめましょう</h2>
+      <p>エージェントAIの回答精度を高め、図面検索やチェックリストの作成を自動化します。</p>
+      <a href="https://github.com/ssKudo/zumen-indexer.git" class="btn btn-primary" target="_blank" id="cta-github-btn">
+        <i data-lucide="github"></i> GitHub リポジトリを見る
+      </a>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container footer-content">
+      <a href="#" class="footer-logo">
+        <div class="logo-symbol">Z</div>
+        <div>zumen-indexer</div>
+      </a>
+      <div>
+        &copy; 2026 zumen-indexer. MIT Licensed.
+      </div>
+      <div class="footer-links">
+        <a href="https://github.com/ssKudo/zumen-indexer.git" target="_blank">GitHub</a>
+        <a href="#problems">Why</a>
+        <a href="#usage">使い方</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Initialize Lucide Icons -->
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
