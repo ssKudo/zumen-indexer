@@ -1,0 +1,74 @@
+# Local-only business data. Do not commit drawings or client files.
+private/
+local-data/
+work-data/
+out/
+outputs/
+
+# Architecture / CAD / BIM files
+*.dwg
+*.dxf
+*.rvt
+*.rfa
+*.rte
+*.ifc
+*.pln
+*.pla
+*.skp
+*.3dm
+*.step
+*.stp
+*.iges
+*.igs
+*.sat
+
+# Drawing exports and scans
+*.pdf
+*.tif
+*.tiff
+*.png
+*.jpg
+*.jpeg
+*.heic
+*.webp
+
+# Archives that may contain private drawings
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+*.tgz
+
+# Generated local indexes
+*.db
+*.sqlite
+*.sqlite3
+*.jsonl
+*.ocr.txt
+*.page.txt
+*.report.txt
+*_readability_report.txt
+
+# Secrets and local environment
+.env
+.env.*
+!.env.example
+
+# OS/editor noise
+.DS_Store
+Thumbs.db
+desktop.ini
+*.swp
+*.swo
+*~
+
+# Python/cache/build artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/

@@ -1,0 +1,291 @@
+# zumen-indexer
+
+### 建築図面をエージェントAIに読ませるためのインデックス生成支援ツール
+
+建築図面 PDF を読み取り、AI エージェントや検索ツールが扱いやすい SQLite インデックスに変換するための小さな CLI ツールです。
+
+図面 PDF はページ数が多く、平面図、立面図、構造図、設備図、仕様書、外構図、測量図などがひとつの束にまとまっていることがよくあります。人間は 1 ページ目の図面リストや右下の図面枠を見れば探せますが、AI やスクリプトにそのまま PDF を渡すと「どのページが何の図面か」「このページの図面番号は何か」「OCR が必要か」が曖昧になりがちです。
+
+`zumen-indexer` はその間を埋めます。
+
+## What It Does
+
+- PDF の基本情報を読む
+- ページごとの埋め込みテキストを抽出する
+- テキスト抽出できないページは必要に応じて OCR する
+- 目次ページから図面番号、図面名、申請兼用フラグを推定する
+- 各ページのタイトル枠から図面名、図面番号、縮尺、物件番号などを補完する
+- SQLite に構造化して保存する
+- AI に読ませやすいページ単位・チャンク単位の検索本文を作る
+- JSONL にも書き出せる
+
+## Why
+
+建築図面 PDF は配布先ごとにフォーマットが異なります。
+
+ある PDF では 1 ページ目にきれいな図面リストがあり、別の PDF では目次がなく、各ページ右下の図面枠だけが頼りになるかもしれません。さらに、PDF 内に文字情報が埋め込まれている場合もあれば、スキャン画像として OCR しないと読めない場合もあります。
+
+このツールは、特定の会社や特定の図面テンプレートだけに依存しないように、次の順番で情報を集めます。
+
+1. PDF の埋め込みテキストを読む
+2. 目次らしいページを探す
+3. 目次から図面リストを推定する
+4. 各ページのタイトル枠らしいテキストから補完する
+5. テキスト量が少ないページだけ OCR する
+6. 結果を SQLite に保存する
+
+完璧な CAD 解析ツールではありません。目的は、図面 PDF を AI や業務スクリプトが最初に理解しやすい索引データに変えることです。
+
+## Private Drawings Stay Private
+
+このリポジトリは公開利用を想定していますが、業務図面や顧客資料を GitHub に上げないため、以下は `.gitignore` で除外しています。
+
+- `private/`
+- `local-data/`
+- `work-data/`
+- `out/`
+- `outputs/`
+- `*.pdf`
+- `*.dwg`, `*.dxf`, `*.rvt`, `*.ifc`, `*.skp` など
+- `*.db`, `*.sqlite`, `*.jsonl`
+- 画像、ZIP、OCR テキスト、生成インデックス
+
+```text
+zumen-indexer/
+  scripts/
+    zumen_indexer.py
+  private/
+    your-drawings.pdf        # ignored by Git
+    zumen_index.db           # ignored by Git
+```
+
+`private/` はローカルで安全に試すための例です。別の場所に PDF を置いて使う場合でも、業務図面、生成 DB、JSONL、OCR テキストなどを公開リポジトリにコミットしないでください。
+
+## Requirements
+
+Python は標準ライブラリのみで動きます。PDF テキスト抽出と OCR には外部コマンドを使います。
+
+Required:
+
+- Python 3.10+
+- Poppler: `pdfinfo`, `pdftotext`
+
+Optional OCR:
+
+- Poppler: `pdftoppm`
+- Tesseract OCR: `tesseract`
+- Japanese OCR data: `jpn`
+
+Ubuntu / WSL の例:
+
+```bash
+sudo apt-get install poppler-utils tesseract-ocr tesseract-ocr-jpn
+```
+
+## Quick Start
+
+PDF をローカルの作業ディレクトリに置きます。以下は `private/` を使う例です。
+
+```bash
+python3 scripts/zumen_indexer.py \
+  private/your-drawings.pdf \
+  --db private/zumen_index.db \
+  --jsonl private/zumen_index.jsonl \
+  --report private/zumen_readability_report.txt \
+  --ocr auto
+```
+
+生成物は Git から無視されます。
+
+## ビジュアル抽出と追加要望テンプレートの運用
+
+図面の線画（ビジュアル）からのみ判定可能な情報（キッチンの左右勝手など）をAIに読み取らせたい場合は、リポジトリ内の [visual_extraction_checklist.md](file:///c:/Users/owner/git-projects/zumen-indexer/visual_extraction_checklist.md) をテンプレートとして現場や配布先に提供してください。
+
+* **運用方法:**
+  1. **テンプレートのコピー**:
+     図面インデックスを作成する前に、[visual_extraction_checklist.md](file:///c:/Users/owner/git-projects/zumen-indexer/visual_extraction_checklist.md) をコピーし、対象の図面セット専用のチェックリストファイルを作成します。
+  2. **追加チェック要望の記入（現場・ご担当者様向け）**:
+     「この図面固有のここをチェックしてほしい」「この項目を重点的に見たい」といった追加の要望がある場合、作成したチェックリストの最下部にある **「4. 追加要望・書き散らし欄」** に、確認したい内容（例：エアコンスリーブの高さ等）を自由に書き残していただきます。
+  3. **インデックス作成への反映（オペレーター・管理者向け）**:
+     インデクサーを実行する前に、チェックリストに書き込まれた要望事項を確認し、AI（Vision LLM）への指示プロンプトや切り出し画像範囲（クロップ範囲）の調整に反映します。
+
+## CLI
+
+```bash
+python3 scripts/zumen_indexer.py INPUT.pdf [options]
+```
+
+Options:
+
+- `--db PATH`: SQLite の出力先。既定は `zumen_index.db`
+- `--jsonl PATH`: AI 取り込み用 JSONL の出力先
+- `--report PATH`: ページごとの読み取り状況を確認するテキストレポートの出力先
+- `--ocr off`: OCR しない
+- `--ocr auto`: テキスト抽出が弱いページだけ OCR する
+- `--ocr force`: 全ページ OCR する
+- `--ocr-lang jpn+eng`: Tesseract の言語指定
+- `--ocr-dpi 220`: OCR 用画像の DPI
+- `--max-pages N`: 実験用に処理ページ数を制限
+- `--overwrite`: 既存 DB を削除して作り直す
+- `--verbose`: 進行ログを詳しく出す
+
+## SQLite Schema
+
+主なテーブルは以下です。
+
+### documents
+
+PDF 単位の情報です。
+
+- `id`
+- `path`
+- `file_name`
+- `sha256`
+- `page_count`
+- `page_size`
+- `created_at`
+- `pdf_metadata_json`
+
+### pages
+
+ページ単位の状態です。
+
+- `id`
+- `document_id`
+- `page_number`
+- `embedded_text_chars`
+- `ocr_text_chars`
+- `best_text_chars`
+- `text_source`
+- `needs_ocr`
+- `quality_score`
+
+### drawings
+
+図面単位の索引です。
+
+- `id`
+- `document_id`
+- `page_number`
+- `drawing_no`
+- `title`
+- `discipline`
+- `scale`
+- `application_flag`
+- `source`
+- `confidence`
+
+### page_texts
+
+抽出テキストの保存先です。
+
+- `page_id`
+- `embedded_text`
+- `ocr_text`
+- `best_text`
+
+### chunks
+
+AI や検索向けの短い本文です。
+
+- `id`
+- `page_id`
+- `chunk_index`
+- `chunk_text`
+
+### extracted_fields
+
+タイトル枠や本文から拾ったキー・バリューです。
+
+- `page_id`
+- `field_name`
+- `field_value`
+- `source`
+- `confidence`
+
+## AI Agent Use Cases
+
+SQLite や生成レポートを AI エージェント（RAG等）に読み込ませることで、対話的な図面確認や回答の下調べに使えます。
+
+- `A05` は何ページ目か
+- `1階平面図` を探す
+- 構造図だけ一覧する
+- 設備図だけ一覧する
+- 申請兼用の図面だけ抽出する
+- `基礎伏図` の本文・特記を読む
+- OCR が必要だったページだけ確認する
+- 図面番号、図面名、縮尺、物件番号を一覧する
+
+### 対話型エージェントとの協調動作と信頼度（Confidence）の活用
+
+生成されるテキストレポート（`zumen_readability_report.txt`）および SQLite データベース内の `extracted_fields` や `drawings` テーブルには、各項目がどの程度正しく抽出できたかを示す **「信頼度（Confidence）」** が記録されます。
+
+* **信頼度の分類:**
+  * **高 (>=0.85):** 目次（TOC）の一致や、明瞭なテキストデータから正確に一致した情報。
+  * **中 (>=0.60):** 部分的なキーワード一致や、レイアウト上の位置から推測した情報。
+  * **要確認 (<0.60):** 文字の崩れ、CAD線との混ざり、または確実な手がかりが見つからずに暫定抽出した情報。
+
+#### エージェントAIによる回答時の注意喚起（プロンプト設計）
+配布先で動作するエージェントAIにデータベースを検索させる際は、ユーザーへの回答に信頼度情報を含めるようにプロンプトで指示することをお勧めします。
+> **（AIエージェントの対話例）**
+> * ユーザー: 「201号室のキッチンはどっち勝手（L/R）ですか？」
+> * AI: 「データベースの情報によると、201号室（A10-2）のキッチンは『L（左シンク・右コンロ）』と記録されています。ただし、この情報の抽出信頼度は **『要確認 (0.55)』** となっているため、図面原本を一度目視で直接確認することをお勧めします。」
+
+#### 人間による効率的なレポート査読
+人間が目視でチェックする場合も、出力されたレポート（`zumen_readability_report.txt`）を「`要確認`」というキーワードで検索（Grep）することで、誤抽出リスクの高いページのみをピンポイントで監査することができます。
+
+SQLite なので、ローカルエージェント、Python、Node.js、Dify、LangChain、LlamaIndex などから扱いやすいです。
+
+## Current Scope
+
+できること:
+
+- PDF テキスト抽出
+- OCR 自動判定
+- 目次らしいページの検出
+- 目次から図面リスト推定
+- タイトル枠からの補助抽出
+- SQLite / JSONL 出力
+
+まだ限定的なこと:
+
+- 図形そのものの CAD 的な理解
+- 寸法線、部屋境界、建具、設備記号の完全な構造化
+- すべての会社・自治体・設計事務所の図面フォーマットへの完全対応
+- 低品質スキャン、傾き、手書きメモの高精度認識
+
+## Roadmap Ideas
+
+- ページ画像サムネイルの生成
+- 目次パーサーの精度向上
+- 図面種別ごとの専用抽出
+- ベクトル検索用 embedding 出力
+- OCR 前処理の強化
+- 手動補正用 CSV エクスポート / インポート
+- Streamlit などでの確認 UI
+- エージェント向け MCP サーバー化
+
+## Security Notes
+
+公開リポジトリで扱う場合、業務図面、顧客名、住所、確認申請情報、設計者情報、測量図、契約情報などが含まれる PDF を誤ってコミットしないでください。
+
+このリポジトリでは PDF や生成 DB を `.gitignore` していますが、最終的な公開前には必ず次を確認してください。
+
+```bash
+git status --short --ignored
+git check-ignore -v private/your-drawings.pdf
+```
+
+## License
+
+MIT License.
+
+商用・非商用を問わず、自由に使えます。改変、再配布、組み込みも可能です。
+
+## Disclaimer
+
+このソフトウェアは現状有姿で提供されます。抽出結果、OCR 結果、図面番号、図面名、法規・仕様・寸法・材料などの内容の正確性は保証しません。
+
+建築設計、施工、確認申請、積算、契約、検査、法令判断、安全判断などの業務判断に使用する場合は、必ず原本 PDF と有資格者・担当者による確認を行ってください。
+
+このソフトウェアの利用により生じたいかなる損害、情報漏えい、誤判断、業務上の不利益についても、作者は責任を負いません。
